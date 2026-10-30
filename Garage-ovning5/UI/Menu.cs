@@ -46,20 +46,20 @@ namespace Garage_ovning5.UI
 		private void HandleCreateGarage()
 		{
 
-			Garage? garage = null;
+			Garage<IVehicle>? garage = null;
 
 			while (garage is null)
 			{
 				Console.WriteLine("\nHow many parking spaces should the garage have?\n");
 
-				if (int.TryParse(Console.ReadLine(), out int parkingSpaces) && parkingSpaces > 0 && parkingSpaces <= Garage.MaximumCapacity)
+				if (int.TryParse(Console.ReadLine(), out int parkingSpaces) && parkingSpaces > 0 && parkingSpaces <= Garage<IVehicle>.MaximumCapacity)
 				{
 					Console.WriteLine($"\nA garage has been created with {parkingSpaces} parking spaces!\n");
-					garage = new Garage(parkingSpaces);
+					garage = new Garage<IVehicle>(parkingSpaces);
 				}
 				else
 				{
-					Console.WriteLine($"Invalid input, please enter a number between 1 and {Garage.MaximumCapacity}");
+					Console.WriteLine($"Invalid input, please enter a number between 1 and {garage?.Capacity}");
 				}
 			}
 			GarageMenu(garage);
@@ -70,7 +70,7 @@ namespace Garage_ovning5.UI
 			Console.WriteLine("Create a pre-parked garage chosen");
 			Console.WriteLine("\nOne vehicle per vehicle type has been created, plus 5 extra parking spaces!\n");
 
-			Garage preParkedGarage = new Garage(10);
+			Garage<IVehicle> preParkedGarage = new Garage<IVehicle>(10);
 
 			preParkedGarage.ParkVehicle(new Car("Abc123", VehicleColor.Red, 4, FuelType.Gasoline));
 			preParkedGarage.ParkVehicle(new Motorcycle("def345", VehicleColor.Blue, 2, 1000));
@@ -82,7 +82,7 @@ namespace Garage_ovning5.UI
 
 		}
 
-		private void GarageMenu(Garage garage)
+		private void GarageMenu(Garage<IVehicle> garage)
 		{
 			bool running = true;
 
@@ -137,7 +137,7 @@ namespace Garage_ovning5.UI
 			}
 		}
 
-		private void HandleParkVehicle(Garage garage)
+		private void HandleParkVehicle(Garage<IVehicle> garage)
 		{
 
 			if (!garage.HasFreeParkingSpot())
@@ -194,12 +194,12 @@ namespace Garage_ovning5.UI
 		
 		}
 
-		private void HandleRetrieveVehicle(Garage garage)
+		private void HandleRetrieveVehicle(Garage<IVehicle> garage)
 		{
 
 			string licensePlateNumber = InputHelper.ReadString("\nPlease enter the license plate number of the vehicle you want to retrieve\n");
 
-			Vehicle? retrievedVehicle = garage.RemoveVehicle(licensePlateNumber);
+			IVehicle? retrievedVehicle = garage.RemoveVehicle(licensePlateNumber);
 
 			if (retrievedVehicle is not null)
 			{
@@ -211,7 +211,7 @@ namespace Garage_ovning5.UI
 			}
 		}
 
-		private void HandleListParkedVehicles(Garage garage)
+		private void HandleListParkedVehicles(Garage<IVehicle> garage)
 		{
 			Console.ForegroundColor = ConsoleColor.Yellow;
 			Console.WriteLine("\n========= Parked vehicles =========\n");
@@ -220,7 +220,7 @@ namespace Garage_ovning5.UI
 			garage.ListAllVehicles();
 		}
 
-		private void HandleListVehicleTypes(Garage garage)
+		private void HandleListVehicleTypes(Garage<IVehicle> garage)
 		{
 			Console.ForegroundColor = ConsoleColor.DarkRed;
 			Console.WriteLine("\n========= Parked vehicle types =========\n");
@@ -234,11 +234,11 @@ namespace Garage_ovning5.UI
 
 		}
 
-		private void HandleSearchByLicensePlate(Garage garage)
+		private void HandleSearchByLicensePlate(Garage<IVehicle> garage)
 		{
 			string searchedLicensePlate = InputHelper.ReadString("Please enter a licence plate number to see if it is parked!");
 
-			Vehicle? vehicle = garage.SearchByLicensePlate(searchedLicensePlate);
+			IVehicle? vehicle = garage.SearchByLicensePlate(searchedLicensePlate);
 
 			if (vehicle is not null)
 			{
@@ -252,7 +252,7 @@ namespace Garage_ovning5.UI
 			
 		}
 
-		private void HandleSearchByProperties(Garage garage)
+		private void HandleSearchByProperties(Garage<IVehicle> garage)
 		{
 
 			VehicleColor? color = VehicleInput.ReadOptionalVehicleColor();
@@ -261,7 +261,7 @@ namespace Garage_ovning5.UI
 
 			VehicleType? vehicleType = VehicleInput.ReadOptionalVehicleType();
 
-			List<Vehicle> searchedProperties = garage.SearchByProperties(color, numberOfWheels, vehicleType);
+			List<IVehicle> searchedProperties = garage.SearchByProperties(color, numberOfWheels, vehicleType);
 
 			if (searchedProperties.Count == 0)
 			{
