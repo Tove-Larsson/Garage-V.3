@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace Garage_ovning5.Vehicles
 {
-	internal abstract class Vehicle
+	internal abstract class Vehicle : IVehicle
 	{
 		private const string LicensePlatePattern = "^[a-zA-Z]{3}([0-9]{3}|[0-9]{2}[a-zA-Z])$";
 		private string _licensePlateNumber = string.Empty;
