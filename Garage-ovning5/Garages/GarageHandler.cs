@@ -92,5 +92,10 @@ namespace Garage_ovning5.Garages
 			return CurrentGarage.SearchByProperties(color, numberOfWheels, vehicleType);
 		}
 
+		public bool IsLicensePlateTaken(string licensePlateNumber)
+		{
+			return CurrentGarage.IsLicensePlateTaken(licensePlateNumber);
+		}
+
 	}
 }

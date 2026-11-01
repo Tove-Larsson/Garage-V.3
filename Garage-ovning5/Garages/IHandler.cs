@@ -28,5 +28,7 @@ namespace Garage_ovning5.Garages
 
 		public IEnumerable<IVehicle> SearchByProperties(VehicleColor? color, int? numberOfWheels, VehicleType? vehicleType);
 
+		public bool IsLicensePlateTaken(string licensePlateNumber);
+
 	}
 }

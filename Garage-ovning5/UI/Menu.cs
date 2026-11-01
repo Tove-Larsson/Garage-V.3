@@ -140,8 +140,7 @@ namespace Garage_ovning5.UI
 
 		private void HandleParkVehicle()
 		{
-
-			if (!garage.HasFreeParkingSpot())
+			if (_handler.FreeSpaces == 0)
 			{
 				Console.WriteLine("\nThe garage is full!\n");
 				return;
@@ -149,7 +148,7 @@ namespace Garage_ovning5.UI
 
 			string licensePlateNumber = VehicleInput.ReadLicensePlateNumber();
 
-			if (garage.IsLicensePlateTaken(licensePlateNumber))
+			if (_handler.IsLicensePlateTaken(licensePlateNumber) == true)
 			{
 				Console.WriteLine($"\nA vehicle with licence plate number: {licensePlateNumber} already exists\n");
 				return;
@@ -158,12 +157,12 @@ namespace Garage_ovning5.UI
 			VehicleColor color = VehicleInput.ReadVehicleColor();
 
 			VehicleType? type = VehicleInput.ReadVehicleType();
+
 			if (type is null)
 			{
 				Console.WriteLine("\nParking cancelled\n");
 				return;
 			}
-
 
 			try
 			{
@@ -175,22 +174,25 @@ namespace Garage_ovning5.UI
 					return;
 				}
 
-				bool parked = garage.ParkVehicle(vehicle);
+				var result = _handler.ParkVehicle(vehicle);
 
-				if (parked)
+				switch(result)
 				{
-					Console.WriteLine($"\nThe {type} with {vehicle.LicensePlateNumber} license plate number was parked successfully!\n");
-				}
-				else
-				{
-					Console.WriteLine("\nThe vehicle could not be parked\n");
+					case ParkingResult.Success:
+						Console.WriteLine($"\nThe {type} with {vehicle.LicensePlateNumber} license plate number was parked successfully!\n");
+						break;
+					case ParkingResult.LicensePlateTaken:
+						Console.WriteLine($"\nA vehicle with licence plate number: {licensePlateNumber} already exists\n");
+						break;
+					case ParkingResult.Full:
+						Console.WriteLine("\nThe garage is full!\n");
+						break;
 				}
 
 			}
 			catch (ArgumentException ex)
 			{
 				Console.WriteLine(ex.Message);
-				return;
 			}
 		
 		}
