@@ -7,7 +7,6 @@ namespace Garage_ovning5.Garages
 {
 	internal class GarageHandler
 	{
-
 		private Garage<IVehicle>? _garage;
 
 		private Garage<IVehicle> CurrentGarage
@@ -22,6 +21,21 @@ namespace Garage_ovning5.Garages
 				return _garage; 
 			}
 			set { _garage = value; }
+		}
+
+		public int MaximumCapacity
+		{
+			get { return Garage<IVehicle>.MaximumCapacity; }
+		}
+
+		public int Capacity
+		{
+			get { return CurrentGarage.Capacity; }
+		}
+
+		public int FreeSpaces
+		{
+			get { return CurrentGarage.FreeSpaces; }
 		}
 
 		public void CreateEmptyGarage(int capacity)
