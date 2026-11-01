@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Garage_ovning5.Garages
 {
-	internal class GarageHandler
+	internal class GarageHandler : IHandler
 	{
 		private Garage<IVehicle>? _garage;
 
