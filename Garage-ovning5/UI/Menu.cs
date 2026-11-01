@@ -2,6 +2,7 @@
 using Garage_ovning5.Vehicles;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Garage_ovning5.UI
 {
@@ -148,7 +149,7 @@ namespace Garage_ovning5.UI
 
 			string licensePlateNumber = VehicleInput.ReadLicensePlateNumber();
 
-			if (_handler.IsLicensePlateTaken(licensePlateNumber) == true)
+			if (_handler.IsLicensePlateTaken(licensePlateNumber))
 			{
 				Console.WriteLine($"\nA vehicle with licence plate number: {licensePlateNumber} already exists\n");
 				return;
@@ -202,7 +203,7 @@ namespace Garage_ovning5.UI
 
 			string licensePlateNumber = InputHelper.ReadString("\nPlease enter the license plate number of the vehicle you want to retrieve\n");
 
-			IVehicle? retrievedVehicle = garage.RemoveVehicle(licensePlateNumber);
+			IVehicle? retrievedVehicle = _handler.RetrieveVehicle(licensePlateNumber);
 
 			if (retrievedVehicle is not null)
 			{
@@ -210,7 +211,7 @@ namespace Garage_ovning5.UI
 			}
 			else
 			{
-				Console.WriteLine($"\nNo vehicle with license plate {licensePlateNumber} was found.\n");
+				Console.WriteLine($"\nNo vehicle with license plate {licensePlateNumber.ToUpperInvariant()} was found.\n");
 			}
 		}
 
@@ -220,7 +221,18 @@ namespace Garage_ovning5.UI
 			Console.WriteLine("\n========= Parked vehicles =========\n");
 			Console.ResetColor();
 
-			garage.ListAllVehicles();
+			var parkedVehicles = _handler.ListParkedVehicles();
+
+			if (!parkedVehicles.Any())
+			{
+				Console.WriteLine("\nThere are no vehicles parked in the garage.\n");
+				return;
+			}
+
+			foreach (var vehicle in parkedVehicles)
+			{
+				Console.WriteLine($"{vehicle}\n");
+			}
 		}
 
 		private void HandleListVehicleTypes()
@@ -229,19 +241,19 @@ namespace Garage_ovning5.UI
 			Console.WriteLine("\n========= Parked vehicle types =========\n");
 			Console.ResetColor();
 
-			Console.WriteLine($"Cars: {garage.CountOfVehicleType(VehicleType.Car)}");
-			Console.WriteLine($"Motorcycles: {garage.CountOfVehicleType(VehicleType.Motorcycle)}");
-			Console.WriteLine($"Buses: {garage.CountOfVehicleType(VehicleType.Bus)}");
-			Console.WriteLine($"Airplanes: {garage.CountOfVehicleType(VehicleType.Airplane)}");
-			Console.WriteLine($"Boats: {garage.CountOfVehicleType(VehicleType.Boat)}\n");
+			var countOfVehicleTypes = _handler.ListVehicleTypes();
 
+			foreach (var type in countOfVehicleTypes)
+			{
+				Console.WriteLine($"{type.Key}: {type.Value}\n");
+			}
 		}
 
 		private void HandleSearchByLicensePlate()
 		{
 			string searchedLicensePlate = InputHelper.ReadString("Please enter a licence plate number to see if it is parked!");
 
-			IVehicle? vehicle = garage.SearchByLicensePlate(searchedLicensePlate);
+			IVehicle? vehicle = _handler.SearchByLicensePlate(searchedLicensePlate);
 
 			if (vehicle is not null)
 			{
@@ -264,17 +276,17 @@ namespace Garage_ovning5.UI
 
 			VehicleType? vehicleType = VehicleInput.ReadOptionalVehicleType();
 
-			List<IVehicle> searchedProperties = garage.SearchByProperties(color, numberOfWheels, vehicleType);
+			IEnumerable<IVehicle> searchedProperties = _handler.SearchByProperties(color, numberOfWheels, vehicleType);
 
-			if (searchedProperties.Count == 0)
+			if (searchedProperties.Count() == 0)
 			{
 				Console.WriteLine("\nNo parked vehicle matched your search\n");
 				return;
 			}
 
-			Console.WriteLine($"\nFound {searchedProperties.Count} vehicles matching your search!\n");
+			Console.WriteLine($"\nFound {searchedProperties.Count()} vehicles matching your search!\n");
 
-			foreach (Vehicle vehicle in searchedProperties)
+			foreach (IVehicle vehicle in searchedProperties)
 			{
 				Console.WriteLine(vehicle);
 			}
