@@ -1,5 +1,7 @@
 ﻿using Garage_ovning5.Vehicles;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Garage_ovning5.Garages
 {
@@ -45,27 +47,35 @@ namespace Garage_ovning5.Garages
 
 		public IVehicle? RetrieveVehicle(string licensePlateNumber)
 		{
-			throw new NotImplementedException();
+			return CurrentGarage.RemoveVehicle(licensePlateNumber);
 		}
 
-		public void ListParkedVehicles()
+		public IEnumerable<IVehicle> ListParkedVehicles()
 		{
-			throw new NotImplementedException();
+			return CurrentGarage.ToList();
 		}
 
-		public void ListVehicleTypes()
+		public Dictionary<VehicleType, int> ListVehicleTypes()
 		{
-			throw new NotImplementedException();
+			var vehicleTypes = new Dictionary<VehicleType, int>();
+
+			foreach (VehicleType vehicleType in Enum.GetValues<VehicleType>())
+			{
+				int count = CurrentGarage.CountOfVehicleType(vehicleType);
+				vehicleTypes.Add(vehicleType, count);
+
+			}
+			return vehicleTypes;
 		}
 
 		public IVehicle? SearchByLicensePlate(string licensePlateNumber)
 		{
-			throw new NotImplementedException();
+			return CurrentGarage.SearchByLicensePlate(licensePlateNumber);
 		}
 
-		public void SearchByProperties(VehicleColor? color, int? numberOfWheels, VehicleType? vehicleType)
+		public IEnumerable<IVehicle> SearchByProperties(VehicleColor? color, int? numberOfWheels, VehicleType? vehicleType)
 		{
-			throw new NotImplementedException();
+			return CurrentGarage.SearchByProperties(color, numberOfWheels, vehicleType);
 		}
 
 	}
