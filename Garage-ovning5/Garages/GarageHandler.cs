@@ -38,9 +38,9 @@ namespace Garage_ovning5.Garages
 			CurrentGarage.ParkVehicle(new Boat("hej729", VehicleColor.Silver, 200.5));
 		}
 
-		public void ParkVehicle(IVehicle vehicle)
+		public ParkingResult ParkVehicle(IVehicle vehicle)
 		{
-			throw new NotImplementedException();
+			return CurrentGarage.ParkVehicle(vehicle);
 		}
 
 		public IVehicle? RetrieveVehicle(string licensePlateNumber)

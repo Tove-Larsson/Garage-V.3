@@ -34,21 +34,20 @@ namespace Garage_ovning5.Garages
 		}
 
 
-		public bool ParkVehicle(T vehicle)
+		public ParkingResult ParkVehicle(T vehicle)
 		{
 			if (!HasFreeParkingSpot())
 			{
-				return false;
+				return ParkingResult.Full;
 			}
 
 			if (IsLicensePlateTaken(vehicle.LicensePlateNumber))
 			{
-				return false;
+				return ParkingResult.LicensePlateTaken;
 			}
-			
-			_vehicles.Add(vehicle);
-			return true;
 
+			_vehicles.Add(vehicle);
+			return ParkingResult.Success;
 		}
 
 		public bool HasFreeParkingSpot()
