@@ -7,6 +7,13 @@ namespace Garage_ovning5.UI
 {
 	internal class Menu
 	{
+
+		private readonly IHandler _handler;
+		public Menu(IHandler handler)
+		{
+			_handler = handler;
+		}
+
 		public void MainMenu()
 		{
 			bool running = true;
