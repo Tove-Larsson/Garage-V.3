@@ -53,23 +53,24 @@ namespace Garage_ovning5.UI
 		private void HandleCreateGarage()
 		{
 
-			Garage<IVehicle>? garage = null;
+			bool garageCreated = false;
 
-			while (garage is null)
+			while (!garageCreated)
 			{
 				Console.WriteLine("\nHow many parking spaces should the garage have?\n");
 
-				if (int.TryParse(Console.ReadLine(), out int parkingSpaces) && parkingSpaces > 0 && parkingSpaces <= Garage<IVehicle>.MaximumCapacity)
+				if (int.TryParse(Console.ReadLine(), out int parkingSpaces) && parkingSpaces > 0 && parkingSpaces <= _handler.MaximumCapacity)
 				{
+					_handler.CreateEmptyGarage(parkingSpaces);
 					Console.WriteLine($"\nA garage has been created with {parkingSpaces} parking spaces!\n");
-					garage = new Garage<IVehicle>(parkingSpaces);
+					garageCreated = true;
 				}
 				else
 				{
-					Console.WriteLine($"Invalid input, please enter a number between 1 and {garage?.Capacity}");
+					Console.WriteLine($"Invalid input, please enter a number between 1 and {_handler.MaximumCapacity}");
 				}
 			}
-			GarageMenu(garage);
+			GarageMenu();
 		}
 
 		private void HandleCreatePreParkedGarage()
@@ -77,19 +78,12 @@ namespace Garage_ovning5.UI
 			Console.WriteLine("Create a pre-parked garage chosen");
 			Console.WriteLine("\nOne vehicle per vehicle type has been created, plus 5 extra parking spaces!\n");
 
-			Garage<IVehicle> preParkedGarage = new Garage<IVehicle>(10);
+			_handler.CreatePreParkedGarage();
 
-			preParkedGarage.ParkVehicle(new Car("Abc123", VehicleColor.Red, 4, FuelType.Gasoline));
-			preParkedGarage.ParkVehicle(new Motorcycle("def345", VehicleColor.Blue, 2, 1000));
-			preParkedGarage.ParkVehicle(new Bus("Did865", VehicleColor.Yellow, 4, 30));
-			preParkedGarage.ParkVehicle(new Airplane("bob261", VehicleColor.Green, 3, 2));
-			preParkedGarage.ParkVehicle(new Boat("hej729", VehicleColor.Silver, 200.5));
-
-			GarageMenu(preParkedGarage);
-
+			GarageMenu();
 		}
 
-		private void GarageMenu(Garage<IVehicle> garage)
+		private void GarageMenu()
 		{
 			bool running = true;
 
@@ -100,7 +94,7 @@ namespace Garage_ovning5.UI
 				Console.ResetColor();
 				Console.WriteLine("Please select what you want to do!\n");
 
-				Console.WriteLine($"The garage has {garage.FreeSpaces} free spaces, {garage.Capacity} in total\n");
+				Console.WriteLine($"The garage has {_handler.FreeSpaces} free spaces, {_handler.Capacity} in total\n");
 
 				Console.WriteLine("1. Park a vehicle");
 				Console.WriteLine("2. Retrieve a vehicle");
@@ -115,22 +109,22 @@ namespace Garage_ovning5.UI
 				switch (selectedChoice)
 				{
 					case "1":
-						HandleParkVehicle(garage);
+						HandleParkVehicle();
 						break;
 					case "2":
-						HandleRetrieveVehicle(garage);
+						HandleRetrieveVehicle();
 						break;
 					case "3":
-						HandleListParkedVehicles(garage);
+						HandleListParkedVehicles();
 						break;
 					case "4":
-						HandleListVehicleTypes(garage);
+						HandleListVehicleTypes();
 						break;
 					case "5":
-						HandleSearchByLicensePlate(garage);
+						HandleSearchByLicensePlate();
 						break;
 					case "6":
-						HandleSearchByProperties(garage);
+						HandleSearchByProperties();
 						break;
 					case "0":
 						Console.WriteLine("Back to main menu!");
@@ -144,7 +138,7 @@ namespace Garage_ovning5.UI
 			}
 		}
 
-		private void HandleParkVehicle(Garage<IVehicle> garage)
+		private void HandleParkVehicle()
 		{
 
 			if (!garage.HasFreeParkingSpot())
@@ -201,7 +195,7 @@ namespace Garage_ovning5.UI
 		
 		}
 
-		private void HandleRetrieveVehicle(Garage<IVehicle> garage)
+		private void HandleRetrieveVehicle()
 		{
 
 			string licensePlateNumber = InputHelper.ReadString("\nPlease enter the license plate number of the vehicle you want to retrieve\n");
@@ -218,7 +212,7 @@ namespace Garage_ovning5.UI
 			}
 		}
 
-		private void HandleListParkedVehicles(Garage<IVehicle> garage)
+		private void HandleListParkedVehicles()
 		{
 			Console.ForegroundColor = ConsoleColor.Yellow;
 			Console.WriteLine("\n========= Parked vehicles =========\n");
@@ -227,7 +221,7 @@ namespace Garage_ovning5.UI
 			garage.ListAllVehicles();
 		}
 
-		private void HandleListVehicleTypes(Garage<IVehicle> garage)
+		private void HandleListVehicleTypes()
 		{
 			Console.ForegroundColor = ConsoleColor.DarkRed;
 			Console.WriteLine("\n========= Parked vehicle types =========\n");
@@ -241,7 +235,7 @@ namespace Garage_ovning5.UI
 
 		}
 
-		private void HandleSearchByLicensePlate(Garage<IVehicle> garage)
+		private void HandleSearchByLicensePlate()
 		{
 			string searchedLicensePlate = InputHelper.ReadString("Please enter a licence plate number to see if it is parked!");
 
@@ -259,7 +253,7 @@ namespace Garage_ovning5.UI
 			
 		}
 
-		private void HandleSearchByProperties(Garage<IVehicle> garage)
+		private void HandleSearchByProperties()
 		{
 
 			VehicleColor? color = VehicleInput.ReadOptionalVehicleColor();
