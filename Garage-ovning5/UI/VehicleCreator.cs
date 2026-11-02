@@ -6,7 +6,7 @@ namespace Garage_ovning5.UI
 	internal static class VehicleCreator
 	{
 
-		public static Vehicle? CreateVehicle(string licensePlateNumber, VehicleColor color, VehicleType type)
+		public static IVehicle? CreateVehicle(string licensePlateNumber, VehicleColor color, VehicleType type)
 		{
 
 			switch(type)
@@ -29,7 +29,7 @@ namespace Garage_ovning5.UI
 
 		}
 
-		private static Vehicle? CreateCar(string licensePlateNumber, VehicleColor color)
+		private static IVehicle? CreateCar(string licensePlateNumber, VehicleColor color)
 		{
 
 			int numberOfWheels = InputHelper.ReadInt("How many wheels does your car have?");
@@ -69,7 +69,7 @@ namespace Garage_ovning5.UI
 			}
 		}
 
-		private static Vehicle? CreateMotorcycle(string licensePlateNumber, VehicleColor color)
+		private static IVehicle? CreateMotorcycle(string licensePlateNumber, VehicleColor color)
 		{
 			int numberOfWheels = InputHelper.ReadInt("How many wheels does your motorcycle have?");
 			int cylinderVolume = InputHelper.ReadInt("What is your motorcycles cylinder volume?");
@@ -78,7 +78,7 @@ namespace Garage_ovning5.UI
 		}
 
 
-		private static Vehicle? CreateBus(string licensePlateNumber, VehicleColor color)
+		private static IVehicle? CreateBus(string licensePlateNumber, VehicleColor color)
 		{
 			int numberOfSeats = InputHelper.ReadInt("How many seats does your bus have?");
 			int numberOfWheels = InputHelper.ReadInt("How many wheels does your bus have?");
@@ -86,7 +86,7 @@ namespace Garage_ovning5.UI
 			return new Bus(licensePlateNumber, color, numberOfWheels, numberOfSeats);
 		}
 
-		private static Vehicle? CreateAirplane(string licensePlateNumber, VehicleColor color)
+		private static IVehicle? CreateAirplane(string licensePlateNumber, VehicleColor color)
 		{
 			int numberOfWheels = InputHelper.ReadInt("How many wheels does your airplane have?");
 			int numberOfEngines = InputHelper.ReadInt("How many engines does your airplane have?");
@@ -95,7 +95,7 @@ namespace Garage_ovning5.UI
 
 		}
 
-		private static Vehicle? CreateBoat(string licensePlateNumber, VehicleColor color)
+		private static IVehicle? CreateBoat(string licensePlateNumber, VehicleColor color)
 		{
 
 			double length = InputHelper.ReadDouble("What is your boats length?");

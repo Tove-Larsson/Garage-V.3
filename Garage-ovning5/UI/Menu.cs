@@ -168,7 +168,7 @@ namespace Garage_ovning5.UI
 			try
 			{
 
-				Vehicle? vehicle = VehicleCreator.CreateVehicle(licensePlateNumber, color, type.Value);
+				IVehicle? vehicle = VehicleCreator.CreateVehicle(licensePlateNumber, color, type.Value);
 				if (vehicle is null)
 				{
 					Console.WriteLine("\nParking cancelled\n");
