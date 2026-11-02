@@ -86,5 +86,83 @@ namespace Garage_ovning5.Tests.Garages
 			Assert.Equal(freeSpacesBefore, garage.FreeSpaces);
 		}
 
+		[Theory]
+		[InlineData("ABC123")]
+		[InlineData("abc123")]
+		[InlineData("AbC123")]
+		public void SearchByLicensePlate_WithDifferentCasing_ReturnsVehicle(string input)
+		{
+			Garage<IVehicle> garage = new Garage<IVehicle>(2);
+			IVehicle car = new Car("ABC123", VehicleColor.Red, 4, FuelType.Diesel);
+			garage.ParkVehicle(car);
+
+			IVehicle? foundVehicle = garage.SearchByLicensePlate(input);
+
+			Assert.Same(car, foundVehicle);
+		}
+
+		[Fact]
+		public void SearchByLicensePlate_WhenNotParked_ReturnsNull()
+		{
+			Garage<IVehicle> garage = new Garage<IVehicle>(2);
+
+			var vehicle = garage.SearchByLicensePlate("abc123");
+
+			Assert.Null(vehicle);
+		}
+
+		[Fact]
+		public void RemoveVehicle_WhenParked_IncreasesFreeSpacesByOne()
+		{
+			Garage<IVehicle> garage = new Garage<IVehicle>(5);
+			IVehicle car = new Car("ABC123", VehicleColor.Red, 4, FuelType.Diesel);
+			garage.ParkVehicle(car);
+			int spacesBefore = garage.FreeSpaces;
+
+			garage.RemoveVehicle("ABC123");
+
+			int spacesAfter = garage.FreeSpaces;
+
+			Assert.Equal(spacesBefore + 1, spacesAfter);
+		}
+
+		[Fact]
+		public void RemoveVehicle_WhenParked_ReturnsVehicle()
+		{
+			Garage<IVehicle> garage = new Garage<IVehicle>(5);
+			IVehicle car = new Car("ABC123", VehicleColor.Red, 4, FuelType.Diesel);
+			garage.ParkVehicle(car);
+
+			var vehicle = garage.RemoveVehicle(car.LicensePlateNumber);
+
+			Assert.Same(car, vehicle);
+		}
+
+		[Fact]
+		public void RemoveVehicle_WhenParked_VehicleCanNoLongerBeFound()
+		{
+			Garage<IVehicle> garage = new Garage<IVehicle>(5);
+			IVehicle car = new Car("ABC123", VehicleColor.Red, 4, FuelType.Diesel);
+			garage.ParkVehicle(car);
+
+			garage.RemoveVehicle(car.LicensePlateNumber);
+
+			var vehicle = garage.SearchByLicensePlate(car.LicensePlateNumber);
+
+			Assert.Null(vehicle);
+		}
+
+		[Fact]
+		public void RemoveVehicle_WhenNotParked_ReturnsNull()
+		{
+			Garage<IVehicle> garage = new Garage<IVehicle>(5);
+			IVehicle car = new Car("ABC123", VehicleColor.Red, 4, FuelType.Diesel);
+			garage.ParkVehicle(car);
+
+			var removedVehicle = garage.RemoveVehicle("ABC12D");
+
+			Assert.Null(removedVehicle);
+		}
+
 	}
 }
