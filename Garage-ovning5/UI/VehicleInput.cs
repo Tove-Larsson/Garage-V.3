@@ -11,9 +11,9 @@ namespace Garage_ovning5.UI
 			{
 				Console.WriteLine("\nWhat is your vehicles license plate number?\n");
 
-				string input = Vehicle.NormalizeLicensePlate(Console.ReadLine());
+				string input = LicensePlate.Normalize(Console.ReadLine());
 
-				if (Vehicle.IsValidLicensePlate(input))
+				if (LicensePlate.IsValid(input))
 				{
 					return input;
 				}

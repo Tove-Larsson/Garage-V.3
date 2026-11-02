@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 
 namespace Garage_ovning5.Vehicles
 {
 	internal abstract class Vehicle : IVehicle
 	{
-		private const string LicensePlatePattern = "^[a-zA-Z]{3}([0-9]{3}|[0-9]{2}[a-zA-Z])$";
 		private string _licensePlateNumber = string.Empty;
 		private VehicleColor _color;
 		private int _numberOfWheels;
@@ -16,9 +14,9 @@ namespace Garage_ovning5.Vehicles
 			get { return _licensePlateNumber; }
 			private set
 			{
-				string normalized = NormalizeLicensePlate(value);
+				string normalized = LicensePlate.Normalize(value);
 
-				if (!IsValidLicensePlate(normalized))
+				if (!LicensePlate.IsValid(normalized))
 				{
 					throw new ArgumentException("\nLicense plate number must be three letters followed by three digits (e.g. ABC123), or three letters, two digits and one letter (e.g. ABC12D)\n");
 				}
@@ -54,21 +52,6 @@ namespace Garage_ovning5.Vehicles
 			LicensePlateNumber = licensePlateNumber;
 			Color = color;
 			NumberOfWheels = numberOfWheels;
-		}
-
-		public static bool IsValidLicensePlate(string? licensePlateNumber)
-		{
-			if (string.IsNullOrWhiteSpace(licensePlateNumber))
-			{
-				return false;
-			}
-
-			return Regex.IsMatch(licensePlateNumber, LicensePlatePattern);
-		}
-
-		public static string NormalizeLicensePlate(string? licensePlateNumber)
-		{
-			return licensePlateNumber?.Trim().ToUpperInvariant() ?? string.Empty;
 		}
 
 		public override string ToString()
