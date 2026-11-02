@@ -87,20 +87,6 @@ namespace Garage_ovning5.Garages
 			return vehicle;
 		}
 
-		public void ListAllVehicles()
-		{
-			if (_vehicles.Count == 0)
-			{
-				Console.WriteLine("There are no vehicles parked in the garage.\n");
-				return;
-			}
-
-			foreach (T vehicle in _vehicles)
-			{
-				Console.WriteLine($"{vehicle}\n");
-			}
-		}
-
 		public int CountOfVehicleType(VehicleType type)
 		{
 			int count = 0;
