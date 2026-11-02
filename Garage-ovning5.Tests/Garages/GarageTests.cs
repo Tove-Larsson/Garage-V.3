@@ -164,5 +164,59 @@ namespace Garage_ovning5.Tests.Garages
 			Assert.Null(removedVehicle);
 		}
 
+		[Fact]
+		public void SearchByProperties_ByColorOnly_ReturnsAllVehiclesOfThatColor()
+		{
+			Garage<IVehicle> garage = CreateGarageWithMixedVehicles();
+
+			List<IVehicle> result = garage.SearchByProperties(VehicleColor.Red, null, null);
+
+			Assert.Equal(2, result.Count);
+			Assert.All(result, vehicle => Assert.Equal(VehicleColor.Red, vehicle.Color));
+		}
+
+
+		[Fact]
+		public void SearchByProperties_ByColorAndWheels_ReturnsOnlyVehiclesMatchingBoth()
+		{
+			Garage<IVehicle> garage = CreateGarageWithMixedVehicles();
+
+			List<IVehicle> result = garage.SearchByProperties(VehicleColor.Red, 4, null);
+
+			IVehicle onlyMatch = Assert.Single(result);
+			Assert.Equal("ABC123", onlyMatch.LicensePlateNumber);
+		}
+
+		[Fact]
+		public void SearchByProperties_WithNoCriteria_ReturnsAllVehicles()
+		{
+			Garage<IVehicle> garage = CreateGarageWithMixedVehicles();
+
+			List<IVehicle> result = garage.SearchByProperties(null, null, null);
+
+			Assert.Equal(3, result.Count);
+
+		}
+
+		[Fact]
+		public void SearchByProperties_WhenNothingMatches_ReturnsEmptyList()
+		{
+			Garage<IVehicle> garage = CreateGarageWithMixedVehicles();
+
+			List<IVehicle> result = garage.SearchByProperties(VehicleColor.Green, null, null);
+
+			Assert.Empty(result);
+		}
+
+		private static Garage<IVehicle> CreateGarageWithMixedVehicles()
+		{
+			Garage<IVehicle> garage = new Garage<IVehicle>(10);
+
+			garage.ParkVehicle(new Car("ABC123", VehicleColor.Red, 4, FuelType.Diesel));
+			garage.ParkVehicle(new Car("DEF456", VehicleColor.Blue, 4, FuelType.Gasoline));
+			garage.ParkVehicle(new Motorcycle("GHI789", VehicleColor.Red, 2, 1000));
+
+			return garage;
+		}
 	}
 }
