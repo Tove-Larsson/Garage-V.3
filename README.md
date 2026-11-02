@@ -17,7 +17,7 @@ Konsolapplikation som simulerar ett garage. Fordon kan parkeras, hämtas ut, lis
 - Tydlig feedback om varför en parkering inte gick, till exempel fullt garage eller upptaget regnummer
 
 ## Regler
-- Regnumret måste vara unikt och ha formatet tre bokstäver och tre siffror (ABC123) eller tre bokstäver, två siffror och en bokstav (ABC12D).
+- Regnumret måste vara unikt och ha formatet tre bokstäver och tre siffror (ABC123) eller tre bokstäver, två siffror och en bokstav (ABC12D). Reglerna ligger samlade i `LicensePlate`.
 - Ett garage kan ha mellan 1 och 2000 parkeringsplatser (egen avgränsning). Kapaciteten anges när garaget skapas.
 - Garaget är generiskt (`Garage<T>`), begränsat till typer som implementerar `IVehicle`, och går att iterera över med `foreach` eftersom det implementerar `IEnumerable<T>`.
 
@@ -26,7 +26,7 @@ Konsolapplikation som simulerar ett garage. Fordon kan parkeras, hämtas ut, lis
 - Numeriska värden som antal hjul och säten kontrolleras först när fordonet skapas. Ett ogiltigt värde avbryter därför hela parkeringen istället för att fråga om just det fältet.
 
 ## Projektstruktur
-- `Vehicles/`: interfacet `IVehicle`, basklassen `Vehicle`, subklasserna `Car`, `Motorcycle`, `Bus`, `Airplane` och `Boat` samt enums för färg, fordonstyp och bränsle
+- `Vehicles/`: interfacet `IVehicle`, basklassen `Vehicle`, subklasserna `Car`, `Motorcycle`, `Bus`, `Airplane` och `Boat`, hjälpklassen `LicensePlate` med reglerna för regnummer (normalisering och format) samt enums för färg, fordonstyp och bränsle
 - `Garages/`: det generiska garaget `Garage<T>`, som hanterar fordonen och sökningarna, `GarageHandler` med interfacet `IHandler`, som är mellanledet mellan gränssnittet och garaget, samt `ParkingResult`, som talar om varför en parkering lyckades eller inte
 - `UI/`: menyn (`Menu`) med interfacet `IUi`, samt hjälpklasser för inmatning och skapande av fordon (`VehicleInput`, `VehicleCreator`, `InputHelper`)
 - `Program.cs`: startpunkt som skapar handler och meny och kopplar ihop dem
