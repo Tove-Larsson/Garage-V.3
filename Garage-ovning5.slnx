@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="Garage-ovning5.Tests/Garage-ovning5.Tests.csproj" Id="e5b534ef-3e73-4dc7-854e-57a368037a48" />
   <Project Path="Garage-ovning5/Garage-ovning5.csproj" />
 </Solution>

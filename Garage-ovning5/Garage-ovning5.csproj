@@ -8,4 +8,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Garage-ovning5.Tests" />
+  </ItemGroup>
+
 </Project>
