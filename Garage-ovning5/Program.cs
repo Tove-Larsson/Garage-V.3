@@ -1,6 +1,5 @@
 ﻿using Garage_ovning5.Garages;
 using Garage_ovning5.UI;
-using System;
 
 namespace Garage_ovning5
 {
@@ -8,9 +7,9 @@ namespace Garage_ovning5
 	{
 		static void Main(string[] args)
 		{
-			GarageHandler handler = new GarageHandler();
+			IHandler handler = new GarageHandler();
 
-			Menu menu = new Menu(handler);
+			IUI menu = new Menu(handler);
 
 			menu.MainMenu();
 		}

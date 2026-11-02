@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Garage_ovning5.UI
 {
-	internal class Menu
+	internal class Menu : IUI
 	{
 
 		private readonly IHandler _handler;
