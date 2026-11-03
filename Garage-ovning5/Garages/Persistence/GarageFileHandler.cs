@@ -56,7 +56,7 @@ namespace Garage_ovning5.Garages.Persistence
 				Console.WriteLine($"Kunde inte avläsa JSON-formatet i filen: {ex.Message}");
 				return null;
 			}
-			catch (Exception ex) // Säkerhetslina för övriga oväntade filfel
+			catch (Exception ex)
 			{
 				Console.WriteLine($"Ett oväntat fel uppstod vid inläsning: {ex.Message}");
 				return null;
