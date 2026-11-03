@@ -11,6 +11,8 @@ namespace Garage_ovning5.UI
 	{
 
 		private readonly IHandler _handler;
+
+		private GarageFileHandler _garageFileHandler = new GarageFileHandler();
 		public Menu(IHandler handler)
 		{
 			_handler = handler;
@@ -130,7 +132,7 @@ namespace Garage_ovning5.UI
 						HandleSearchByProperties();
 						break;
 					case "7":
-						GarageFileHandler.SaveFile(_handler);
+						_garageFileHandler.SaveFile(_handler);
 						break;
 					case "0":
 						Console.WriteLine("Back to main menu!");

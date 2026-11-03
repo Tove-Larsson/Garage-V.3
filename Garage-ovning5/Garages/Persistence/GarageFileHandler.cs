@@ -7,37 +7,51 @@ namespace Garage_ovning5.Garages.Persistence
 {
 	internal class GarageFileHandler
 	{
+		private const string FolderPath = "data";
+		private const string FileName = "garage.txt";
+
 		public void SaveFile(IHandler garageHandler)
 		{
-			string folder = "data";
+			Directory.CreateDirectory(FolderPath);
 
-			string filePath = Path.Combine(folder, "garage.txt");
+			string filePath = GetFilePath();
+
+			List<string> rows = CreateGarageRows(garageHandler);
+
+			File.WriteAllLines(filePath, rows);
+		}
+
+		private string GetFilePath()
+		{
+			string filePath = Path.Combine(FolderPath, FileName);
 
 			Console.WriteLine($"Full path to the file: {Path.GetFullPath(filePath)}");
 
-			Directory.CreateDirectory(folder);
+			return filePath;
+		}
 
+		private List<string> CreateGarageRows(IHandler garageHandler)
+		{
 			string capacity = garageHandler.Capacity.ToString();
 
 			var parkedVehicles = garageHandler.ListParkedVehicles();
 
-			List<string> rows = new List<string>();
+			List<string> garageRows = new List<string>();
 
-			rows.Add(capacity);
+			garageRows.Add(capacity);
 
-			foreach (var vehicle in parkedVehicles )
+			foreach (var vehicle in parkedVehicles)
 			{
-				string vehicleLine = $"{vehicle.VehicleType};{vehicle.LicensePlateNumber};{vehicle.Color};{vehicle.NumberOfWheels}";
-				rows.Add(vehicleLine);
+				garageRows.Add(CreateVehicleRow(vehicle));
 			}
 
-			foreach (var line in rows )
-			{
-				Console.WriteLine(line);
-			}
-
-
-			File.WriteAllLines(filePath, rows);
+			return garageRows;
 		}
+
+		private string CreateVehicleRow(IVehicle vehicle)
+		{
+			return $"{vehicle.VehicleType};{vehicle.LicensePlateNumber};{vehicle.Color};{vehicle.NumberOfWheels}";
+		}
+
 	}
 }
