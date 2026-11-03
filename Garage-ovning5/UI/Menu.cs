@@ -11,9 +11,9 @@ namespace Garage_ovning5.UI
 	{
 
 		private readonly IHandler _handler;
-		private GarageFileHandler _garageFileHandler = new GarageFileHandler();
+		private readonly IGarageFileHandler _garageFileHandler;
 
-		public Menu(IHandler handler, GarageFileHandler garageFileHandler)
+		public Menu(IHandler handler, IGarageFileHandler garageFileHandler)
 		{
 			_handler = handler;
 			_garageFileHandler = garageFileHandler;

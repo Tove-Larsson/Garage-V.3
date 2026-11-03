@@ -9,7 +9,7 @@ namespace Garage_ovning5
 		static void Main(string[] args)
 		{
 			IHandler handler = new GarageHandler();
-			GarageFileHandler garageFileHandler = new GarageFileHandler();
+			IGarageFileHandler garageFileHandler = new GarageFileHandler();
 
 			IUI menu = new Menu(handler, garageFileHandler);
 
