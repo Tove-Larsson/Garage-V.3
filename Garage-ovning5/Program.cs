@@ -1,4 +1,5 @@
 ﻿using Garage_ovning5.Garages;
+using Garage_ovning5.Garages.Persistence;
 using Garage_ovning5.UI;
 
 namespace Garage_ovning5
@@ -8,8 +9,9 @@ namespace Garage_ovning5
 		static void Main(string[] args)
 		{
 			IHandler handler = new GarageHandler();
+			GarageFileHandler garageFileHandler = new GarageFileHandler();
 
-			IUI menu = new Menu(handler);
+			IUI menu = new Menu(handler, garageFileHandler);
 
 			menu.MainMenu();
 		}

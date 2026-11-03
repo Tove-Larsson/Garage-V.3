@@ -1,116 +1,71 @@
 ﻿using Garage_ovning5.Vehicles;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
+using System.Text.Json;
 
 namespace Garage_ovning5.Garages.Persistence
 {
+	internal class GarageSaveData
+	{
+		public int Capacity { get; set; }
+		public List<IVehicle> ParkedVehicles { get; set; } = new();
+	}
+
 	internal class GarageFileHandler
 	{
 		private const string FolderPath = "data";
-		private const string FileName = "garage.txt";
+		private const string FileName = "garage.json";
 
 		public void SaveFile(IHandler garageHandler)
 		{
 			Directory.CreateDirectory(FolderPath);
-
 			string filePath = GetFilePath();
 
-			List<string> rows = CreateGarageRows(garageHandler);
-
-			File.WriteAllLines(filePath, rows);
-
-			ReadFile();
-		}
-
-		private string GetFilePath()
-		{
-			string filePath = Path.Combine(FolderPath, FileName);
-
-			Console.WriteLine($"Full path to the file: {Path.GetFullPath(filePath)}");
-
-			return filePath;
-		}
-
-		private List<string> CreateGarageRows(IHandler garageHandler)
-		{
-			string capacity = garageHandler.Capacity.ToString();
-
-			var parkedVehicles = garageHandler.ListParkedVehicles();
-
-			List<string> garageRows = new List<string>();
-
-			garageRows.Add(capacity);
-
-			foreach (var vehicle in parkedVehicles)
+			var saveData = new GarageSaveData
 			{
-				garageRows.Add(CreateVehicleRow(vehicle));
-			}
+				Capacity = garageHandler.Capacity,
+				ParkedVehicles = new List<IVehicle>(garageHandler.ListParkedVehicles())
+			};
 
-			return garageRows;
+			var options = new JsonSerializerOptions { WriteIndented = true };
+
+			string jsonString = JsonSerializer.Serialize(saveData, options);
+
+			File.WriteAllText(filePath, jsonString);
+
+			Console.WriteLine($"The garage was saved to path: {Path.GetFullPath(filePath)}");
 		}
 
-		private string CreateVehicleRow(IVehicle vehicle)
-		{
-			string commonPart = $"{vehicle.VehicleType};{vehicle.LicensePlateNumber};{vehicle.Color};{vehicle.NumberOfWheels}";
-
-			return $"{commonPart};{CreateVehicleSpecificDetail(vehicle)}";
-		}
-
-		private string CreateVehicleSpecificDetail(IVehicle vehicle)
-		{
-			switch (vehicle)
-			{
-				case Car car:
-					return car.FuelType.ToString();
-				case Motorcycle motorcycle:
-					return motorcycle.CylinderVolume.ToString();
-				case Bus bus:
-					return bus.NumberOfSeats.ToString();
-				case Airplane airplane:
-					return airplane.NumberOfEngines.ToString();
-				case Boat boat:
-					return boat.Length.ToString(CultureInfo.InvariantCulture);
-				default:
-					throw new NotSupportedException($"Vehicle type {vehicle.VehicleType} cannot be saved.");
-			}
-		}
-
-		public void ReadFile()
+		public GarageSaveData? LoadFile()
 		{
 			string filePath = GetFilePath();
 
 			if (!File.Exists(filePath))
 			{
-				throw new FileNotFoundException("The file could not be found");
+				return null;
 			}
 
-			string[] fileContent = File.ReadAllLines(filePath);
-
-			if (fileContent.Length == 0)
+			try
 			{
-				return;
+				string jsonString = File.ReadAllText(filePath);
+				return JsonSerializer.Deserialize<GarageSaveData>(jsonString);
 			}
-
-			if (!int.TryParse(fileContent[0], out int capacity))
+			catch (JsonException ex)
 			{
-				return;
+				Console.WriteLine($"Kunde inte avläsa JSON-formatet i filen: {ex.Message}");
+				return null;
 			}
-
-			Console.WriteLine(capacity);
-
-			for (int i = 1; i < fileContent.Length; i++)
+			catch (Exception ex) // Säkerhetslina för övriga oväntade filfel
 			{
-				string line = fileContent[i];
-				string[] fields = line.Split(';');
-
-				Console.WriteLine($"Vehicle type: {fields[0]}");
-				Console.WriteLine($"License plate: {fields[1]}");
-				Console.WriteLine($"Color: {fields[2]}");
-				Console.WriteLine($"Number of wheels: {fields[3]}");
-				Console.WriteLine($"Specific detail: {fields[4]}");
+				Console.WriteLine($"Ett oväntat fel uppstod vid inläsning: {ex.Message}");
+				return null;
 			}
+		}
+
+		private string GetFilePath()
+		{
+			return Path.Combine(FolderPath, FileName);
 		}
 	}
 }

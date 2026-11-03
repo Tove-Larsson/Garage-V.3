@@ -11,11 +11,12 @@ namespace Garage_ovning5.UI
 	{
 
 		private readonly IHandler _handler;
-
 		private GarageFileHandler _garageFileHandler = new GarageFileHandler();
-		public Menu(IHandler handler)
+
+		public Menu(IHandler handler, GarageFileHandler garageFileHandler)
 		{
 			_handler = handler;
+			_garageFileHandler = garageFileHandler;
 		}
 
 		public void MainMenu()
@@ -31,6 +32,7 @@ namespace Garage_ovning5.UI
 
 				Console.WriteLine("1. Create a garage");
 				Console.WriteLine("2. Create a garage with pre-parked vehicles");
+				Console.WriteLine("3. Load garage from file");
 				Console.WriteLine("0. Exit program");
 
 				string? selectedChoice = Console.ReadLine();
@@ -42,6 +44,9 @@ namespace Garage_ovning5.UI
 						break;
 					case "2":
 						HandleCreatePreParkedGarage();
+						break;
+						case "3":
+						HandleLoadGarage();
 						break;
 					case "0":
 						Console.WriteLine("You chose to end the application, goodbye!");
@@ -83,6 +88,28 @@ namespace Garage_ovning5.UI
 			Console.WriteLine("\nOne vehicle per vehicle type has been created, plus 5 extra parking spaces!\n");
 
 			_handler.CreatePreParkedGarage();
+
+			GarageMenu();
+		}
+
+		private void HandleLoadGarage()
+		{
+			GarageSaveData? saveData = _garageFileHandler.LoadFile();
+
+			if (saveData is null)
+			{
+				Console.WriteLine("\nNo saved file was found\n");
+				return;
+			}
+
+			_handler.CreateEmptyGarage(saveData.Capacity);
+
+			foreach (var vehicle in saveData.ParkedVehicles)
+			{
+				_handler.ParkVehicle(vehicle);
+			}
+
+			Console.WriteLine($"\nThe garage successfully loaded! Capacity: {saveData.Capacity}, Parked vehicles: {saveData.ParkedVehicles.Count}\n");
 
 			GarageMenu();
 		}
