@@ -1,4 +1,5 @@
 ﻿using Garage_ovning5.Garages;
+using Garage_ovning5.Garages.Persistence;
 using Garage_ovning5.Vehicles;
 using System;
 using System.Collections.Generic;
@@ -103,6 +104,7 @@ namespace Garage_ovning5.UI
 				Console.WriteLine("4. List parked vehicle types");
 				Console.WriteLine("5. Search for a vehicle with license plate number");
 				Console.WriteLine("6. Search for a vehicle by its properties, one or multiple");
+				Console.WriteLine("7. Save garage to file");
 				Console.WriteLine("0. Back to main menu");
 
 				string? selectedChoice = Console.ReadLine();
@@ -126,6 +128,9 @@ namespace Garage_ovning5.UI
 						break;
 					case "6":
 						HandleSearchByProperties();
+						break;
+					case "7":
+						GarageFileHandler.SaveFile(_handler);
 						break;
 					case "0":
 						Console.WriteLine("Back to main menu!");
