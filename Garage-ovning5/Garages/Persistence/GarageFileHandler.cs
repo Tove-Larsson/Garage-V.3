@@ -20,6 +20,8 @@ namespace Garage_ovning5.Garages.Persistence
 			List<string> rows = CreateGarageRows(garageHandler);
 
 			File.WriteAllLines(filePath, rows);
+
+			ReadFile();
 		}
 
 		private string GetFilePath()
@@ -72,6 +74,42 @@ namespace Garage_ovning5.Garages.Persistence
 					return boat.Length.ToString(CultureInfo.InvariantCulture);
 				default:
 					throw new NotSupportedException($"Vehicle type {vehicle.VehicleType} cannot be saved.");
+			}
+		}
+
+		public void ReadFile()
+		{
+			string filePath = GetFilePath();
+
+			if (!File.Exists(filePath))
+			{
+				throw new FileNotFoundException("The file could not be found");
+			}
+
+			string[] fileContent = File.ReadAllLines(filePath);
+
+			if (fileContent.Length == 0)
+			{
+				return;
+			}
+
+			if (!int.TryParse(fileContent[0], out int capacity))
+			{
+				return;
+			}
+
+			Console.WriteLine(capacity);
+
+			for (int i = 1; i < fileContent.Length; i++)
+			{
+				string line = fileContent[i];
+				string[] fields = line.Split(';');
+
+				Console.WriteLine($"Vehicle type: {fields[0]}");
+				Console.WriteLine($"License plate: {fields[1]}");
+				Console.WriteLine($"Color: {fields[2]}");
+				Console.WriteLine($"Number of wheels: {fields[3]}");
+				Console.WriteLine($"Specific detail: {fields[4]}");
 			}
 		}
 	}
