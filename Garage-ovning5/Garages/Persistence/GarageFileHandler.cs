@@ -1,6 +1,7 @@
 ﻿using Garage_ovning5.Vehicles;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 
 namespace Garage_ovning5.Garages.Persistence
@@ -50,8 +51,28 @@ namespace Garage_ovning5.Garages.Persistence
 
 		private string CreateVehicleRow(IVehicle vehicle)
 		{
-			return $"{vehicle.VehicleType};{vehicle.LicensePlateNumber};{vehicle.Color};{vehicle.NumberOfWheels}";
+			string commonPart = $"{vehicle.VehicleType};{vehicle.LicensePlateNumber};{vehicle.Color};{vehicle.NumberOfWheels}";
+
+			return $"{commonPart};{CreateVehicleSpecificDetail(vehicle)}";
 		}
 
+		private string CreateVehicleSpecificDetail(IVehicle vehicle)
+		{
+			switch (vehicle)
+			{
+				case Car car:
+					return car.FuelType.ToString();
+				case Motorcycle motorcycle:
+					return motorcycle.CylinderVolume.ToString();
+				case Bus bus:
+					return bus.NumberOfSeats.ToString();
+				case Airplane airplane:
+					return airplane.NumberOfEngines.ToString();
+				case Boat boat:
+					return boat.Length.ToString(CultureInfo.InvariantCulture);
+				default:
+					throw new NotSupportedException($"Vehicle type {vehicle.VehicleType} cannot be saved.");
+			}
+		}
 	}
 }
