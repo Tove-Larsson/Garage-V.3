@@ -1,15 +1,16 @@
 ﻿using Garage_ovning5.Vehicles;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Garage_ovning5.Garages
 {
-	internal class Garage
+	internal class Garage<T> : IEnumerable<T> where T : class, IVehicle
 	{
 
 		public const int MaximumCapacity = 2000;
 		private readonly int _capacity;
-		private readonly List<Vehicle> _vehicles;
+		private readonly List<T> _vehicles;
 
 		public Garage(int capacity)
 		{
@@ -19,7 +20,7 @@ namespace Garage_ovning5.Garages
 			}
 
 			_capacity = capacity;
-			_vehicles = new List<Vehicle>(capacity);
+			_vehicles = new List<T>(capacity);
 		}
 
 		public int Capacity
@@ -33,21 +34,20 @@ namespace Garage_ovning5.Garages
 		}
 
 
-		public bool ParkVehicle(Vehicle vehicle)
+		public ParkingResult ParkVehicle(T vehicle)
 		{
 			if (!HasFreeParkingSpot())
 			{
-				return false;
+				return ParkingResult.Full;
 			}
 
 			if (IsLicensePlateTaken(vehicle.LicensePlateNumber))
 			{
-				return false;
+				return ParkingResult.LicensePlateTaken;
 			}
-			
-			_vehicles.Add(vehicle);
-			return true;
 
+			_vehicles.Add(vehicle);
+			return ParkingResult.Success;
 		}
 
 		public bool HasFreeParkingSpot()
@@ -62,9 +62,9 @@ namespace Garage_ovning5.Garages
 
 		public bool IsLicensePlateTaken(string licensePlateNumber)
 		{
-			string searchedPlate = Vehicle.NormalizeLicensePlate(licensePlateNumber);
+			string searchedPlate = LicensePlate.Normalize(licensePlateNumber);
 
-			foreach (Vehicle vehicle in _vehicles)
+			foreach (T vehicle in _vehicles)
 			{
 				if (vehicle.LicensePlateNumber == searchedPlate)
 				{
@@ -75,9 +75,9 @@ namespace Garage_ovning5.Garages
 			return false;
 		}
 
-		public Vehicle? RemoveVehicle(string licensePlateNumber)
+		public T? RemoveVehicle(string licensePlateNumber)
 		{
-			Vehicle? vehicle = SearchByLicensePlate(licensePlateNumber);
+			T? vehicle = SearchByLicensePlate(licensePlateNumber);
 
 			if (vehicle is not null)
 			{
@@ -87,25 +87,11 @@ namespace Garage_ovning5.Garages
 			return vehicle;
 		}
 
-		public void ListAllVehicles()
-		{
-			if (_vehicles.Count == 0)
-			{
-				Console.WriteLine("There are no vehicles parked in the garage.\n");
-				return;
-			}
-
-			foreach (Vehicle vehicle in _vehicles)
-			{
-				Console.WriteLine($"{vehicle}\n");
-			}
-		}
-
 		public int CountOfVehicleType(VehicleType type)
 		{
 			int count = 0;
 
-			foreach (Vehicle vehicle in _vehicles)
+			foreach (IVehicle vehicle in _vehicles)
 			{
 				if (vehicle.VehicleType == type)
 				{
@@ -116,13 +102,13 @@ namespace Garage_ovning5.Garages
 			return count;
 		}
 
-		public Vehicle? SearchByLicensePlate(string licensePlateNumber)
+		public T? SearchByLicensePlate(string licensePlateNumber)
 		{
-			string searchedPlate = Vehicle.NormalizeLicensePlate(licensePlateNumber);
+			string searchedPlate = LicensePlate.Normalize(licensePlateNumber);
 
 			for (int i = 0; i < _vehicles.Count; i++)
 			{
-				Vehicle vehicle = _vehicles[i];
+				T vehicle = _vehicles[i];
 
 				if (vehicle.LicensePlateNumber == searchedPlate)
 				{
@@ -134,7 +120,7 @@ namespace Garage_ovning5.Garages
 			return null;
 		}
 
-		private static bool MatchesSearch(Vehicle vehicle, VehicleColor? color, int? wheels, VehicleType? type)
+		private static bool MatchesSearch(IVehicle vehicle, VehicleColor? color, int? wheels, VehicleType? type)
 		{
 			if (color is not null && vehicle.Color != color)
 			{
@@ -155,11 +141,11 @@ namespace Garage_ovning5.Garages
 
 		}
 
-		public List<Vehicle> SearchByProperties(VehicleColor? color, int? numberOfWheels, VehicleType? vehicleType)
+		public List<T> SearchByProperties(VehicleColor? color, int? numberOfWheels, VehicleType? vehicleType)
 		{
-			List<Vehicle> matches = new List<Vehicle>();
+			List<T> matches = new List<T>();
 
-			foreach (Vehicle vehicle in _vehicles)
+			foreach (T vehicle in _vehicles)
 			{
 				if (MatchesSearch(vehicle, color, numberOfWheels, vehicleType))
 				{
@@ -169,5 +155,17 @@ namespace Garage_ovning5.Garages
 
 			return matches;
 		}
+
+
+		public IEnumerator<T> GetEnumerator()
+		{
+			return _vehicles.GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+
 	}
 }
