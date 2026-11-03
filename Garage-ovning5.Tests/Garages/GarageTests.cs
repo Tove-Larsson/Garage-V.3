@@ -195,7 +195,6 @@ namespace Garage_ovning5.Tests.Garages
 			List<IVehicle> result = garage.SearchByProperties(null, null, null);
 
 			Assert.Equal(3, result.Count);
-
 		}
 
 		[Fact]
@@ -207,6 +206,74 @@ namespace Garage_ovning5.Tests.Garages
 
 			Assert.Empty(result);
 		}
+
+		[Theory]
+		[InlineData("Car", 2)]
+		[InlineData("Motorcycle", 1)]
+		[InlineData("Boat", 0)]
+		public void CountOfVehicleType_WithMixedVehicles_ReturnsCountOfThatType(string typeName, int expected)
+		{
+			Garage<IVehicle> garage = CreateGarageWithMixedVehicles();
+			VehicleType type = Enum.Parse<VehicleType>(typeName);
+
+			int count = garage.CountOfVehicleType(type);
+
+			Assert.Equal(expected, count);
+		}
+
+		[Theory]
+		[InlineData(0)]
+		[InlineData(-1)]
+		[InlineData(2001)]
+		public void Constructor_WithInvalidCapacity_Throws(int capacity)
+		{
+			Assert.Throws<ArgumentOutOfRangeException>(() => new Garage<IVehicle>(capacity));
+		}
+
+		[Theory]
+		[InlineData(1)]
+		[InlineData(2000)]
+		public void Constructor_WithBoundaryCapacity_SetsCapacity(int capacity)
+		{
+			Garage<IVehicle> garage = new Garage<IVehicle>(capacity);
+
+			Assert.Equal(capacity, garage.Capacity);
+		}
+
+		[Fact]
+		public void Enumeration_WithParkedVehicles_YieldsAllVehicles()
+		{
+			Garage<IVehicle> garage = new Garage<IVehicle>(5);
+			IVehicle car = new Car("ABC123", VehicleColor.Red, 4, FuelType.Diesel);
+			IVehicle boat = new Boat("DEF456", VehicleColor.Blue, 1000);
+			garage.ParkVehicle(car);
+			garage.ParkVehicle(boat);
+
+			List<IVehicle> enumerated = new List<IVehicle>();
+			foreach (IVehicle vehicle in garage)
+			{
+				enumerated.Add(vehicle);
+			}
+
+			Assert.Equal(2, enumerated.Count);
+			Assert.Contains(car, enumerated);
+			Assert.Contains(boat, enumerated);
+		}
+
+		[Theory]
+		[InlineData("ABC123")]
+		[InlineData("abc123")]
+		[InlineData("AbC123")]
+		public void IsLicensePlateTaken_WithDifferentCasing_ReturnsTrue(string input)
+		{
+			Garage<IVehicle> garage = new Garage<IVehicle>(2);
+			garage.ParkVehicle(new Car("ABC123", VehicleColor.Red, 4, FuelType.Diesel));
+
+			bool result = garage.IsLicensePlateTaken(input);
+
+			Assert.True(result);
+		}
+
 
 		private static Garage<IVehicle> CreateGarageWithMixedVehicles()
 		{
